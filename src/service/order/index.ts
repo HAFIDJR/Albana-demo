@@ -1,9 +1,15 @@
 import axios from "axios";
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react";
+import { JSX } from "react/jsx-runtime";
+const token = localStorage.getItem("token");
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
-const token = localStorage.getItem("token");
+
 // Tipe data sesuai struktur response Anda
 export type OrderItem = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  map(arg0: (item: { updatedAt: string | number | Date; bankName: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; accountNumber: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; nominal: number | bigint; status: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }, index: Key | null | undefined) => JSX.Element): import("react").ReactNode;
+  length: number;
   id: string;
   ordererCustomerId: string;
   deliveryTargetCustomerId: string;
@@ -13,7 +19,6 @@ export type OrderItem = {
   note: string;
   createdAt: string;
   updatedAt: string;
-  paymentHistory: [];
   SalesChannel: {
     id: string;
     name: string;
@@ -36,7 +41,9 @@ export type OrderItem = {
   OrdererCustomer: Customer;
   DeliveryTargetCustomer: Customer;
   OrderDetail: OrderDetail;
-  ShippingServices: []; // Tergantung struktur detailnya
+  ShippingServices?: {
+    shippingService?: string;
+  }[];
 };
 
 type Customer = {
@@ -149,6 +156,8 @@ type ResponseSucces = {
   statusCode?: number;
 };
 
+
+
 export async function getOrders(query?: OrderQuery): Promise<ResponseSucces> {
   try {
     const { data } = await axios.get(`${apiUrl}/orders`, {
@@ -157,7 +166,6 @@ export async function getOrders(query?: OrderQuery): Promise<ResponseSucces> {
         Authorization: `Bearer ${token}`,
       },
     });
- 
 
     return data;
   } catch (error) {

@@ -42,7 +42,7 @@ function SectionDasboard() {
             </div>
             <div className="mx-1">
               <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
-                Kuota Order kamu: Unlimited
+                Kuota Order kamu: 900
               </h3>
               <span className="py-2 text-theme-xs font-medium text-gray-500 dark:text-white">
                 Jumlah kuota utama & tambahan

@@ -8,7 +8,6 @@ import { LuPackageCheck } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import DropdownCancelOrder from "../dropdown/DropdownCancelOrder";
 import { OrderItem } from "../../../service/order";
-// Sesuaikan path
 
 type Props = {
   orders: OrderItem[];
@@ -34,6 +33,12 @@ export default function OrderCard({ orders }: Props) {
     },
   ];
 
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return (
+      <p className="text-center text-gray-500">Tidak ada order ditemukan.</p>
+    );
+  }
+
   return (
     <>
       {orders.map((order) => (
@@ -46,18 +51,21 @@ export default function OrderCard({ orders }: Props) {
             <div>
               <p className="text-md text-blue-600 font-semibold">#{order.id}</p>
               <p className="text-sm text-gray-400">
-                dari <span className="font-semibold text-black">App</span> ( (
-                {new Date(order.orderDate).toLocaleString("id-ID", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                dari <span className="font-semibold text-black">App</span> (
+                {order.orderDate
+                  ? new Date(order.orderDate).toLocaleString("id-ID", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "-"}
                 )
               </p>
             </div>
+
             <div className="flex items-center space-x-4">
               {TrackingProgress.map((step, index) => (
                 <div key={index} className="flex items-center">
@@ -66,12 +74,12 @@ export default function OrderCard({ orders }: Props) {
                       step.status === "completed"
                         ? "border-green-500"
                         : "border-gray-300"
-                    }  hover:border-green-500 transition duration-300`}
+                    } hover:border-green-500 transition duration-300`}
                     title={`Status pengiriman: ${step.status}`}
                   >
                     <span
                       className={
-                        step.status === "success" || step.status === "Terbayar"
+                        step.status === "success"
                           ? "text-green-500"
                           : "text-gray-400"
                       }
@@ -86,6 +94,7 @@ export default function OrderCard({ orders }: Props) {
               ))}
             </div>
           </div>
+
           <hr className="my-4 border-gray-300" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -94,25 +103,25 @@ export default function OrderCard({ orders }: Props) {
               <div>
                 <p className="font-normal text-gray-500">Pemesan</p>
                 <p className="text-xl font-semibold">
-                  {order.OrdererCustomer.name}
+                  {order.OrdererCustomer?.name || "Tidak diketahui"}
                 </p>
                 <p className="text-sm text-purple-600">
-                  {order.OrdererCustomer.category}
+                  {order.OrdererCustomer?.category || "-"}
                 </p>
               </div>
               <div>
                 <p className="font-normal text-gray-500">Dikirim kepada</p>
                 <p className="text-xl font-semibold">
-                  {order.DeliveryTargetCustomer.name}
+                  {order.DeliveryTargetCustomer?.name || "Tidak diketahui"}
                 </p>
                 <p className="text-sm text-purple-600">
-                  {order.DeliveryTargetCustomer.category}
+                  {order.DeliveryTargetCustomer?.category || "-"}
                 </p>
               </div>
               <div>
                 <p className="font-normal text-gray-500">Catatan</p>
                 <p className="text-md font-light text-gray-dark">
-                  {order.note}
+                  {order.note || "-"}
                 </p>
               </div>
             </div>
@@ -123,22 +132,32 @@ export default function OrderCard({ orders }: Props) {
                 <p className="font-semibold">Status Bayar & Total bayar</p>
                 <div className="border rounded-lg p-4 my-2">
                   <p className="text-2xl font-semibold mb-2 mr-2">
-                    Rp. {order.OrderDetail.finalPrice.toLocaleString()}
+                    Rp.{" "}
+                    {order.OrderDetail?.finalPrice?.toLocaleString("id-ID") ||
+                      "0"}
                   </p>
                   <span className="bg-green-600 text-white text-[11px] px-3 py-1.5 rounded">
-                    {order.OrderDetail.paymentStatus.charAt(0).toUpperCase() +
-                      order.OrderDetail.paymentStatus.slice(1).toLowerCase()}
+                    {order.OrderDetail?.paymentStatus
+                      ? order.OrderDetail.paymentStatus
+                          .charAt(0)
+                          .toUpperCase() +
+                        order.OrderDetail.paymentStatus.slice(1).toLowerCase()
+                      : "Tidak diketahui"}
                   </span>
                   <span className="bg-gray-600 text-white text-[11px] ml-2 px-2 py-1.5 rounded">
-                    {order.OrderDetail.PaymentMethod.name} (
-                    {new Date(order.OrderDetail.paymentDate).toLocaleString(
-                      "id-ID",
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )}
+                    {order.OrderDetail?.PaymentMethod?.name ||
+                      "Metode tidak diketahui"}{" "}
+                    (
+                    {order.OrderDetail?.paymentDate
+                      ? new Date(order.OrderDetail.paymentDate).toLocaleString(
+                          "id-ID",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )
+                      : "-"}
                     )
                   </span>
                   <button
@@ -157,7 +176,7 @@ export default function OrderCard({ orders }: Props) {
                   <ModalRiwayatTran
                     changeModal={() => {
                       setShowModal(false);
-                      setSelectedOrderId(null); // Reset ID setelah modal ditutup
+                      setSelectedOrderId(null);
                     }}
                     orderId={selectedOrderId}
                   />
@@ -172,7 +191,11 @@ export default function OrderCard({ orders }: Props) {
                     <FaTruck className="text-blue-500 text-2xl" />
                   </div>
                   <div>
-                    <p className="text-md font-semibold">""</p>
+                    <p className="text-md font-semibold">
+                      {order.ShippingServices?.[0]?.shippingService ||
+                        "Belum tersedia"}
+                    </p>
+
                     <p className="text-md text-gray-500">Resi: -</p>
                   </div>
                 </div>
@@ -182,20 +205,26 @@ export default function OrderCard({ orders }: Props) {
             {/* Produk */}
             <div className="mt-6 ml-2">
               <p className="font-semibold text-gray-500 text-sm">
-                Produk (total {order.OrderDetail.OrderProducts.length} item)
+                Produk (total {order.OrderDetail?.OrderProducts?.length || 0}{" "}
+                item)
               </p>
-              <ul className="mt-1 text-blue-700 font-semibold space-y-1">
-                {order.OrderDetail.OrderProducts.map((op) => (
-                  <li key={op.id}>
-                    <Link
-                      to={`/produk/detail_produk/${op.Product.id}`}
-                      className="text-blue-700 hover:underline"
-                    >
-                      {op.Product.name} ({op.productQty}x)
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              {order.OrderDetail?.OrderProducts?.length > 0 ? (
+                <ul className="mt-1 text-blue-700 font-semibold space-y-1">
+                  {order.OrderDetail.OrderProducts.map((op) => (
+                    <li key={op.id}>
+                      <Link
+                        to={`/produk/detail_produk/${op.Product?.id}`}
+                        className="text-blue-700 hover:underline"
+                      >
+                        {op.Product?.name || "Produk tidak ditemukan"} (
+                        {op.productQty}x)
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-400">Tidak ada produk</p>
+              )}
             </div>
           </div>
 
@@ -209,9 +238,11 @@ export default function OrderCard({ orders }: Props) {
                 id={`check-${order.id}`}
                 className="w-6 h-10 mr-2 border-blue-600 rounded-full"
               />
+              <Link to={`/order/print-label/${order.id}`}>
               <button className="flex items-center gap-2 border border-blue-600 px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-100 text-sm">
                 <FaPrint /> Print
               </button>
+              </Link>
             </div>
 
             <div className="flex gap-2">
@@ -227,7 +258,7 @@ export default function OrderCard({ orders }: Props) {
                     <FaEdit /> Edit Order
                   </button>
                 </Link>
-                <DropdownCancelOrder />
+                <DropdownCancelOrder orderId={order.id} />
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
@@ -12,9 +13,9 @@ import FilterStatusOrder from "../../components/order/filter/FilterStatusOrder";
 import { DownloadIcon } from "../../icons";
 import { FaPlus } from "react-icons/fa6";
 import OptionDropdownOrder from "../../components/order/dropdown/OptionDropdownOrder";
-import FilterOrderDropdown from "../../components/order/filter/FilterOrderDropdown";
 import OrderToolbar from "../../components/order/orderToolbar";
 import { getOrders, OrderItem } from "../../service/order/index";
+import { exportOrdersToExcel } from "../../service/order/create-order.service";
 
 export type FilterState = {
   ordererCustomerId?: string;
@@ -37,7 +38,7 @@ export type FilterState = {
 };
 
 export default function AllOrderPage() {
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [filter, setFilter] = useState<boolean>(false);
@@ -45,12 +46,6 @@ export default function AllOrderPage() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(isMobile);
-  console.log(loading);
-
-  function setSelect() {
-    setSelectedStatuses([]);
-  }
   const [filterOrder, setFilterOrder] = useState<FilterState>({
     ordererCustomerId: "",
     deliveryTargetCustomerId: "",
@@ -68,7 +63,7 @@ export default function AllOrderPage() {
     paymentMethodId: "",
     search: "",
     sort: "",
-    // order: "desc",
+    order: "desc",
   });
 
   const location = useLocation();
@@ -81,7 +76,9 @@ export default function AllOrderPage() {
       if (keyword) params.set("search", keyword.toLowerCase());
 
       Object.entries(filter).forEach(([key, value]) => {
-        if (value) params.set(key, value);
+        if (value && value !== "") {
+          params.set(key, value);
+        }
       });
 
       navigate(`?${params.toString()}`);
@@ -89,35 +86,54 @@ export default function AllOrderPage() {
     [navigate]
   );
 
+  const handleStatusChange = (status: string) => {
+    setSelectedStatuses(status);
+
+    const newFilter = {
+      ...filterOrder,
+      paymentStatus: status || "",
+    };
+
+    setFilterOrder(newFilter);
+    handleSearchAndFilter(keyword, newFilter);
+  };
+
   useEffect(() => {
     async function fetchFilteredOrders() {
       setLoading(true);
-      // const params = new URLSearchParams(location.search);
+      const params = new URLSearchParams(location.search);
 
       const filterFromURL: FilterState = {
-        // ordererCustomerId: params.get("ordererCustomerId") || "",
-        // deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
-        // salesChannelId: params.get("salesChannelId") || "",
-        // deliveryPlaceId: params.get("deliveryPlaceId") || "",
-        // orderDate: params.get("orderDate") || "",
-        // orderStatus: params.get("orderStatus") || "",
-        // orderMonth: params.get("orderMonth") || "",
-        // orderYear: params.get("orderYear") || "",
-        // startDate: params.get("startDate") || "",
-        // endDate: params.get("endDate") || "",
-        // customerCategory: params.get("customerCategory") || "",
-        // paymentStatus: params.get("paymentStatus") || "",
-        // productId: params.get("productId") || "",
-        // paymentMethodId: params.get("paymentMethodId") || "",
-        // search: params.get("search") || "",
-        // sort: params.get("sort") || "",
-        // order: (params.get("order") as "asc" | "desc") || "desc",
+        ordererCustomerId: params.get("ordererCustomerId") || "",
+        deliveryTargetCustomerId: params.get("deliveryTargetCustomerId") || "",
+        salesChannelId: params.get("salesChannelId") || "",
+        deliveryPlaceId: params.get("deliveryPlaceId") || "",
+        orderDate: params.get("orderDate") || "",
+        orderStatus: params.get("orderStatus") || "",
+        orderMonth: params.get("orderMonth") || "",
+        orderYear: params.get("orderYear") || "",
+        startDate: params.get("startDate") || "",
+        endDate: params.get("endDate") || "",
+        customerCategory: params.get("customerCategory") || "",
+        paymentStatus: params.get("paymentStatus") || "",
+        productId: params.get("productId") || "",
+        paymentMethodId: params.get("paymentMethodId") || "",
+        search: params.get("search") || "",
+        sort: params.get("sort") || "",
+        order: (params.get("order") as "asc" | "desc") || "desc",
       };
 
       setFilterOrder(filterFromURL);
-      const result = await getOrders(filterFromURL);
+      setSelectedStatuses(filterFromURL.paymentStatus || "");
 
-      console.log(result);
+      // Hanya kirim properti yang ada nilainya
+      const filteredParams = Object.fromEntries(
+        Object.entries(filterFromURL).filter(
+          ([_, value]) => value !== "" && value !== undefined
+        )
+      );
+
+      const result = await getOrders(filteredParams);
 
       if (result.success && Array.isArray(result.responseObject)) {
         setOrders(result.responseObject);
@@ -129,7 +145,7 @@ export default function AllOrderPage() {
     }
 
     fetchFilteredOrders();
-  }, [location.search]);
+  }, [location.search, setLoading]);
 
   useEffect(() => {
     if (!location.search) {
@@ -154,7 +170,17 @@ export default function AllOrderPage() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setIsMobile]);
+
+  function handleExport() {
+    exportOrdersToExcel()
+      .then(() => {
+        console.log("File berhasil diunduh");
+      })
+      .catch(() => {
+        alert("Gagal mengunduh file Excel.");
+      });
+  }
 
   return (
     <div>
@@ -172,16 +198,14 @@ export default function AllOrderPage() {
           }`}
         >
           <FilterStatusOrder
+            onChange={handleStatusChange}
             selectedStatuses={selectedStatuses}
-            onChange={setSelect}
           />
         </div>
 
         {/* Search and Filter Row */}
         <div className="flex flex-wrap items-center gap-2 mb-4 mt-3">
-          <div className="relative">
-            <FilterOrderDropdown onChange={() => {}} value="" />
-          </div>
+          <div className="relative">{/* <FilterOrderDropdown /> */}</div>
           <div className="flex-1">
             <SearchOrder
               onSearch={() => handleSearchAndFilter(keyword, filterOrder)}
@@ -214,6 +238,7 @@ export default function AllOrderPage() {
             <Button
               size="md"
               variant="outline"
+              onClick={handleExport}
               startIcon={<DownloadIcon className="size-5 text-blue-700" />}
             >
               Download
@@ -237,11 +262,6 @@ export default function AllOrderPage() {
               {orders.length} order ditemukan
             </p>
             <div className="flex justify-between items-center bg-white p-3.5 rounded-lg">
-              <p className="text-md font-light">
-                Sisa kuota order:{" "}
-                <span className="text-green-600 font-semibold">826</span>
-              </p>
-              <span className="text-gray-400 mx-2">|</span>
               <Link to="/profile">
                 <span className="text-blue-600 text-md font-semibold">
                   Lihat Detail
@@ -251,7 +271,18 @@ export default function AllOrderPage() {
           </div>
         </div>
         <div className="mb-6">
-          <OrderCard orders={orders} />
+          {loading ? (
+            <div className="text-center py-10">
+              {" "}
+              <div
+                className={`flex flex-wrap gap-2 ${
+                  isMobile ? "overflow-x-auto" : ""
+                }`}
+              ></div>
+            </div>
+          ) : (
+            <OrderCard orders={orders} />
+          )}
         </div>
         <OrderToolbar />
       </div>

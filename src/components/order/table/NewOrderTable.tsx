@@ -7,8 +7,8 @@ import {
 } from "../../ui/table";
 
 export default function NewOrderTable() {
-  const orders: string[] = [];
-  console.log(orders);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orders: any[] = []; // Ganti dengan data order Anda
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] mt-5">
@@ -19,44 +19,37 @@ export default function NewOrderTable() {
             <TableRow>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400 w-1"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400 w-1">
                 No
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Order ID
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Pemesan & Tgl Pesan
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Produk
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Tagihan
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Pembayaran
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400"
-              >
+                className="px-5 py-3 font-semibold text-black text-start text-sm md:text-theme-md dark:text-gray-400">
                 Keterangan
               </TableCell>
             </TableRow>
@@ -65,28 +58,28 @@ export default function NewOrderTable() {
           {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
             {orders.length > 0 ? (
-              orders.map((_, index) => (
+              orders.map((order, index) => (
                 <TableRow key={index}>
                   <TableCell className="py-4 px-3 sm:px-6 text-start text-gray-500">
-                    {1 + 1}
+                    {index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.id}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.customer} - {order.orderDate}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.product}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.bill}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.payment}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-black text-start text-sm md:text-theme-md dark:text-gray-400">
-                    {"hello"}
+                    {order.notes}
                   </TableCell>
                 </TableRow>
               ))

@@ -1,17 +1,12 @@
 import Select from "../../form/Select";
 
-// interface Option {
-//   value: string;
-//   label: string;
-// }
-
 interface FilterOrderDropdownProps {
   value: string;
   onChange: (value: string) => void;
 }
 
 const filterOptions = [
-  { value: "orderId", label: "Order ID" },
+  { value: "ordererCustomerId", label: "Order ID" },
   { value: "customerName", label: "Nama Customer" },
   { value: "productName", label: "Nama Produk" },
   { value: "sku", label: "SKU" },
@@ -22,7 +17,6 @@ const filterOptions = [
 
 function FilterOrderDropdown(props: FilterOrderDropdownProps) {
   const { value, onChange } = props;
-  console.log(value);
 
   const handleSelectChange = (selectedValue: string) => {
     onChange(selectedValue);
@@ -33,6 +27,7 @@ function FilterOrderDropdown(props: FilterOrderDropdownProps) {
       <div className="relative w-full max-w-md">
         <div>
           <Select
+            defaultValue={value}
             options={filterOptions}
             onChange={handleSelectChange}
             className="max-w-md rounded-lg"

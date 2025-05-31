@@ -53,8 +53,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
             <h2 className="text-xl font-semibold">Filter</h2>
             <button
               onClick={changeModal}
-              className="text-gray-500 hover:text-gray-500"
-            >
+              className="text-gray-500 hover:text-gray-500">
               <IoIosCloseCircleOutline size={28} />
             </button>
           </div>
@@ -66,8 +65,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
               <div className="relative">
                 <Label
                   htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
+                  className="font-semibold text-md">
                   Keterangan
                 </Label>
                 <Select
@@ -92,8 +90,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
               <div className="relative">
                 <Label
                   htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
+                  className="font-semibold text-md">
                   Kategori Pemesan
                 </Label>
                 <Select
@@ -118,8 +115,7 @@ export default function ModalFilterNewOrder({ changeModal }: Props) {
               <div className="relative">
                 <Label
                   htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
+                  className="font-semibold text-md">
                   Kanal Penjualan
                 </Label>
                 <Select

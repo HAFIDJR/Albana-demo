@@ -11,7 +11,19 @@ const produkData = [
 function ProductList() {
   const [search, setSearch] = useState("");
   const [jumlah, setJumlah] = useState(produkData.map(() => 1));
-  console.log(setJumlah);
+
+  const handleJumlahChange = (index: number, delta: number) => {
+    setJumlah((prev) => {
+      const baru = [...prev];
+      baru[index] = Math.max(1, baru[index] + delta);
+      return baru;
+    });
+  };
+
+  const handleTambah = (index: number) => {
+    alert(`Menambahkan ${jumlah[index]} x ${produkData[index].nama}`);
+  };
+
   const filteredProduk = produkData.filter((p) =>
     p.nama.toLowerCase().includes(search.toLowerCase())
   );
@@ -30,8 +42,7 @@ function ProductList() {
         filteredProduk.map((p, index) => (
           <div
             key={index}
-            className="flex items-center justify-between bg-white p-4 mb-3 rounded shadow"
-          >
+            className="flex items-center justify-between bg-white p-4 mb-3 rounded shadow">
             <img src={PrdukImage} alt="produk" className="w-12 h-12 rounded" />
             <div className="flex-1 ml-4">
               <div className="font-semibold">{p.nama}</div>
@@ -40,16 +51,26 @@ function ProductList() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <button className="px-2 bg-gray-200 rounded">-</button>
+              <button
+                onClick={() => handleJumlahChange(index, -1)}
+                className="px-2 bg-gray-200 rounded">
+                -
+              </button>
               <input
                 type="text"
                 readOnly
                 className="w-8 text-center border rounded"
                 value={jumlah[index]}
               />
-              <button className="px-2 bg-gray-200 rounded">+</button>
+              <button
+                onClick={() => handleJumlahChange(index, 1)}
+                className="px-2 bg-gray-200 rounded">
+                +
+              </button>
             </div>
-            <button className="ml-3 bg-blue-600 text-white px-3 py-1 rounded-lg">
+            <button
+              onClick={() => handleTambah(index)}
+              className="ml-3 bg-blue-600 text-white px-3 py-1 rounded-lg">
               + Tambahkan
             </button>
           </div>

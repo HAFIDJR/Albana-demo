@@ -10,7 +10,6 @@ import Button from "../../ui/button/Button.tsx";
 import { IoIosSave } from "react-icons/io";
 import { useState } from "react";
 import ModalAddCustomer from "../modal/ModalAddcustomer.tsx";
-import PaymentSection from "../card/PaymentSection.tsx";
 import ShippingSection from "../card/ShippingSection.tsx";
 
 export default function EditOrderFomPage({ orderId }: { orderId: string }) {
@@ -82,8 +81,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                   />
                   <button
                     onClick={() => setShowModal(true)}
-                    className="btn-secondary border p-2 text-sm rounded-lg"
-                  >
+                    className="btn-secondary border p-2 text-sm rounded-lg">
                     <span className="px-1">+</span>
                     Customer
                   </button>
@@ -93,8 +91,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
               <div>
                 <Label
                   htmlFor="dikirimKepada"
-                  className="font-semibold text-md"
-                >
+                  className="font-semibold text-md">
                   Dikirim Kepada
                 </Label>
                 <div className="flex gap-2">
@@ -109,8 +106,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                   />
                   <button
                     onClick={() => setShowModal(true)}
-                    className="btn-secondary border p-2 text-sm rounded-md"
-                  >
+                    className="btn-secondary border p-2 text-sm rounded-md">
                     <span className="px-1">+</span>
                     Customer
                   </button>
@@ -123,8 +119,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
               <div className="relative">
                 <Label
                   htmlFor="pengirimanDari"
-                  className="font-semibold text-md"
-                >
+                  className="font-semibold text-md">
                   Pengiriman Dari
                 </Label>
                 <Select
@@ -152,7 +147,7 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
                   label="Tanggal Order"
                   placeholder="Select a date"
                   onChange={(dates, currentDateString) => {
-                    console.log(dates);
+                    console.log(dates)
                     handleInputChange("orderDate", currentDateString);
                   }}
                 />
@@ -215,8 +210,6 @@ export default function EditOrderFomPage({ orderId }: { orderId: string }) {
             <ComponentCard title="Orderan">
               <TableAddOrder />
             </ComponentCard>
-
-            <PaymentSection />
             <ShippingSection />
 
             {/* Tombol Aksi */}

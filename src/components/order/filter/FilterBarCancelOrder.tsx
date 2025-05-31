@@ -6,8 +6,7 @@ import DatePicker from "../../form/date-picker";
 export default function FilterBarCancelOrder() {
   const [status, setStatus] = useState("Cancel");
   const [startDate, setStartDate] = useState("2025-02-22");
-  const [endDate, setEndDate] = useState("2025-05-23");
-  console.log(setEndDate);
+  const [endDate] = useState("2025-05-23");
 
   const statusOptions = ["Cancel", "Rejected", "Expired"];
 
@@ -29,8 +28,7 @@ export default function FilterBarCancelOrder() {
                 ? "text-blue-600 border-blue-600"
                 : "text-gray-600 border-gray-300"
             }`}
-            onClick={() => setStatus(option)}
-          >
+            onClick={() => setStatus(option)}>
             <span
               className={`w-2 h-2 rounded-full ${
                 status === option ? "bg-blue-600" : "bg-gray-400"
@@ -47,7 +45,7 @@ export default function FilterBarCancelOrder() {
           <DatePicker
             id="start-date"
             placeholder="Select a date"
-           
+            // value={new Date(startDate)}
             onChange={(date) => {
               const formatted = date.toString().split("T")[0];
               setStartDate(formatted);
@@ -58,6 +56,7 @@ export default function FilterBarCancelOrder() {
           <DatePicker
             id="start-date"
             placeholder="Select a date"
+            // value={new Date(endDate)}
             onChange={(date) => {
               const formatted = date.toString().split("T")[0];
               setStartDate(formatted);
@@ -67,8 +66,7 @@ export default function FilterBarCancelOrder() {
 
         <button
           onClick={handleSearch}
-          className="ml-2 p-3 border rounded-md hover:bg-gray-100"
-        >
+          className="ml-2 p-3 border rounded-md hover:bg-gray-100">
           <FiSearch className="text-black w-auto h-5" />
         </button>
       </div>
